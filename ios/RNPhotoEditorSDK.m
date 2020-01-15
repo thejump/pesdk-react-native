@@ -124,6 +124,7 @@ RCT_EXPORT_METHOD(present:(nullable NSURLRequest *)request
 - (void)photoEditViewController:(nonnull PESDKPhotoEditViewController *)photoEditViewController didSaveImage:(nonnull UIImage *)uiImage imageAsData:(nonnull NSData *)imageData {
   PESDKPhotoEditViewControllerOptions *photoEditViewControllerOptions = photoEditViewController.configuration.photoEditViewControllerOptions;
 
+    
   if (imageData.length == 0) {
     // Export image without any changes to target format if possible.
     switch (photoEditViewControllerOptions.outputImageFileFormat) {
@@ -143,6 +144,9 @@ RCT_EXPORT_METHOD(present:(nullable NSURLRequest *)request
   id serialization = nil;
 
   if (imageData.length != 0) {
+      NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                              NSUserDomainMask, YES);
+      
     if ([self.exportType isEqualToString:RN_IMGLY.kExportTypeFileURL]) {
       if ([imageData RN_IMGLY_writeToURL:self.exportFile andCreateDirectoryIfNecessary:YES error:&error]) {
         image = self.exportFile.absoluteString;
@@ -151,6 +155,7 @@ RCT_EXPORT_METHOD(present:(nullable NSURLRequest *)request
       NSString *mediaType = CFBridgingRelease(UTTypeCopyPreferredTagWithClass(photoEditViewControllerOptions.outputImageFileFormatUTI, kUTTagClassMIMEType));
       image = [NSString stringWithFormat:@"data:%@;base64,%@", mediaType, [imageData base64EncodedStringWithOptions: 0]];
     }
+     
   }
 
   if (self.serializationEnabled)
@@ -171,6 +176,11 @@ RCT_EXPORT_METHOD(present:(nullable NSURLRequest *)request
     if (error == nil) {
       resolve(@{ @"image": (image != nil) ? image : [NSNull null],
                  @"hasChanges": @(photoEditViewController.hasChanges),
+                 //jgc start changes
+                 @"width": @(uiImage.size.width),
+                 @"height": @(uiImage.size.height),
+                                       
+                     //jgc end changes
                  @"serialization": (serialization != nil) ? serialization : [NSNull null] });
     } else {
       reject(RN_IMGLY.kErrorUnableToExport, [NSString RN_IMGLY_string:@"Unable to export image or serialization." withError:error], error);
