@@ -1,5 +1,6 @@
 #import "RNImglyKit.h"
 #import "RNImglyKitSubclass.h"
+@import PhotoEditorSDK;
 
 #define RN_IMGLY_DEBUG 0
 
@@ -100,6 +101,70 @@ const struct RN_IMGLY_Constants RN_IMGLY = {
     configuration = [[PESDKConfiguration alloc] initWithBuilder:^(PESDKConfigurationBuilder * _Nonnull builder) {
       builder.assetCatalog = assetCatalog;
       [builder configureFromDictionary:updatedDictionary error:&error];
+        //jgc start changes
+
+        
+        [PESDK setBundleImageBlock:^UIImage * _Nullable(NSString * _Nonnull imageName) {
+            if ([imageName isEqualToString:@"imgly_icon_save"]) {
+                return [UIImage imageNamed:@"right24"];
+            }
+            return nil;
+        }];
+        
+        [builder configurePhotoEditViewController:^(PESDKPhotoEditViewControllerOptionsBuilder * _Nonnull options) {
+          id forceCrop = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"forceCrop" default:@(NO)];
+          id editorCaption = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"editorCaption" default:@"Editor"];
+          id textFirst = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"textFirst" default:@(NO)];
+          options.titleViewConfigurationClosure = ^(UIView *_Nonnull titleView) {
+              ((UILabel *)titleView).text=[RCTConvert NSString:editorCaption];
+          };
+            
+         NSMutableArray<PESDKPhotoEditMenuItem *> *menuItems = [[PESDKPhotoEditMenuItem defaultItems] mutableCopy];
+         NSUInteger textDesignIndex;
+         NSUInteger filterIndex;
+         for (NSUInteger i =0;i< [menuItems count] ;  i++) {
+            PESDKPhotoEditMenuItem *item =[menuItems objectAtIndex:i];
+             if(item.toolMenuItem && [item.toolMenuItem.title isEqualToString:@"Filter"]){
+               filterIndex=i;
+             }
+             if(item.actionMenuItem && [item.actionMenuItem.title isEqualToString:@"Filter"]){
+               filterIndex=i;
+             }
+             if(item.toolMenuItem && [item.toolMenuItem.title isEqualToString:@"Text Design"]){
+                 textDesignIndex=i;
+               }
+               if(item.actionMenuItem && [item.actionMenuItem.title isEqualToString:@"Text Design"]){
+                 textDesignIndex=i;
+               }
+         
+         }
+        id filter = [menuItems objectAtIndex:filterIndex];
+         [menuItems removeObjectAtIndex:filterIndex];
+         [menuItems insertObject:filter atIndex:0];
+            
+        id textDesign = [menuItems objectAtIndex:textDesignIndex];
+        [menuItems removeObjectAtIndex:textDesignIndex];
+        if([RCTConvert BOOL:textFirst]){
+            [menuItems insertObject:textDesign atIndex:0];
+        }
+        else{
+            [menuItems insertObject:textDesign atIndex:1];
+         }
+        
+         options.menuItems = menuItems;
+               
+               
+         if ([RCTConvert BOOL:forceCrop]) {
+              [builder configureTransformToolController:^(PESDKTransformToolControllerOptionsBuilder * _Nonnull options) {
+                 options.allowFreeCrop = NO;
+                 options.allowedCropRatios = @[
+               [[PESDKCropAspect alloc] initWithWidth:1440 height:1920 localizedName:@"Crop" rotatable:NO]];
+             }];
+         }
+    }];
+
+//jgc end changes
+
     }];
     if (error != nil) {
       RCTLogError(@"Error while updating configuration: %@", error);
@@ -111,7 +176,10 @@ const struct RN_IMGLY_Constants RN_IMGLY = {
     if (viewController == nil) {
       return;
     }
-
+      //jgc start changes
+      viewController.toolbar.backgroundColor=[UIColor colorWithRed:0.16 green:0.69 blue:0.75 alpha:1.0];
+      //jgc end changes
+          
     self.exportType = exportType;
     self.exportFile = exportFile;
     self.serializationEnabled = serializationEnabled;
@@ -126,6 +194,21 @@ const struct RN_IMGLY_Constants RN_IMGLY = {
     [currentViewController presentViewController:self.mediaEditViewController animated:YES completion:NULL];
   });
 }
+
+//jgc start changes
+-(void)mediaEditViewController:(PESDKMediaEditViewController *)mediaEditViewController didDismissToolController:(PESDKPhotoEditToolController * _Nonnull)toolController{
+  
+    mediaEditViewController.toolbar.backgroundColor=[UIColor colorWithRed:0.16 green:0.69 blue:0.75 alpha:1.0];
+    
+}
+
+-(void)mediaEditViewController:(PESDKMediaEditViewController *)mediaEditViewController willPresentToolController:(PESDKPhotoEditToolController * _Nonnull)toolController{
+    mediaEditViewController.toolbar.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:1.0];
+    
+}
+
+
+//jgc end changes
 
 - (void)dismiss:(nullable PESDKMediaEditViewController *)mediaEditViewController animated:(BOOL)animated completion:(nullable IMGLYCompletionBlock)completion
 {
