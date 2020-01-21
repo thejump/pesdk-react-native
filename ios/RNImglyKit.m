@@ -112,8 +112,10 @@ const struct RN_IMGLY_Constants RN_IMGLY = {
         }];
         
         [builder configurePhotoEditViewController:^(PESDKPhotoEditViewControllerOptionsBuilder * _Nonnull options) {
-          id forceCrop = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"forceCrop" default:@(NO)];
-          id editorCaption = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"editorCaption" default:@"Editor"];
+          id limitCrop = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"limitCrop" default:@(NO)];
+                  id limitCropWidth = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"limitCropWidth" default:0];
+                  id limitCropHeight = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"limitCropHeight" default:0];
+                id editorCaption = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"editorCaption" default:@"Editor"];
           id textFirst = [NSDictionary RN_IMGLY_dictionary:dictionary valueForKeyPath:@"textFirst" default:@(NO)];
           options.titleViewConfigurationClosure = ^(UIView *_Nonnull titleView) {
               ((UILabel *)titleView).text=[RCTConvert NSString:editorCaption];
@@ -154,11 +156,11 @@ const struct RN_IMGLY_Constants RN_IMGLY = {
          options.menuItems = menuItems;
                
                
-         if ([RCTConvert BOOL:forceCrop]) {
+         if ([RCTConvert BOOL:limitCrop]) {
               [builder configureTransformToolController:^(PESDKTransformToolControllerOptionsBuilder * _Nonnull options) {
                  options.allowFreeCrop = NO;
                  options.allowedCropRatios = @[
-               [[PESDKCropAspect alloc] initWithWidth:1440 height:1920 localizedName:@"Crop" rotatable:NO]];
+                     [[PESDKCropAspect alloc] initWithWidth:[RCTConvert CGFloat:limitCropWidth] height:[RCTConvert CGFloat:limitCropHeight] localizedName:@"Crop" rotatable:NO]];
              }];
          }
     }];
