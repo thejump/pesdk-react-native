@@ -1,5 +1,5 @@
 
-package ly.img.react_native.pesdk;
+package thejump.pesdk;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
