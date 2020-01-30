@@ -1,4 +1,4 @@
-package ly.img.react_native.pesdk
+package thejump.pesdk
 
 import android.app.Activity
 import android.content.Intent
