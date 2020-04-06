@@ -1,5 +1,5 @@
 {
-  "name": "react-native-photoeditorsdk",
+  "name": "pesdk-react-native",
   "title": "React Native module for PhotoEditor SDK",
   "version": "2.1.2",
   "description": "A React Native module for PhotoEditor SDK. Integrate the photo editor into your own HTML5, iOS or Android app - in minutes!",
