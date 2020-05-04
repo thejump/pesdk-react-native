@@ -7,6 +7,9 @@ apply plugin: 'com.android.library'
 // Apply the ImgLy-Plugin
 apply plugin: 'ly.img.android.sdk'
 apply plugin: 'kotlin-android'
+allprojects {
+    apply plugin: 'idea'
+}
 imglyConfig {
     pesdk {
         enabled true
