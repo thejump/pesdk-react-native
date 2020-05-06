@@ -1,12 +1,13 @@
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
-
 apply plugin: 'com.android.library'
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 // Apply the ImgLy-Plugin
 apply plugin: 'ly.img.android.sdk'
-apply plugin: 'kotlin-android'
 //allprojects {
 //    apply plugin: 'idea'
 //}
@@ -49,5 +50,7 @@ repositories {
 dependencies {
     implementation 'com.facebook.react:react-native:+'
     compileOnly "ly.img.android.sdk:serializer:$imglyConfig.version"
+  implementation "androidx.core:core-ktx:+"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
-  
+
