@@ -16,6 +16,6 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.dependency 'React'
-  s.dependency 'React/RCTImage'
+  s.dependency 'React-RCTImage'
   s.dependency 'PhotoEditorSDK', '~> 10.7'
 end
