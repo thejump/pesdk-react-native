@@ -179,7 +179,7 @@ const struct RN_IMGLY_Constants RN_IMGLY = {
       return;
     }
       //jgc start changes
-      viewController.toolbar.backgroundColor=[UIColor colorWithRed:0.16 green:0.69 blue:0.75 alpha:1.0];
+      viewController.toolbar.backgroundColor=[UIColor colorWithRed: 0.11 green: 0.56 blue: 0.98 alpha:1.0];
       //jgc end changes
           
     self.exportType = exportType;
@@ -200,7 +200,7 @@ const struct RN_IMGLY_Constants RN_IMGLY = {
 //jgc start changes
 -(void)mediaEditViewController:(PESDKMediaEditViewController *)mediaEditViewController didDismissToolController:(PESDKPhotoEditToolController * _Nonnull)toolController{
   
-    mediaEditViewController.toolbar.backgroundColor=[UIColor colorWithRed:0.16 green:0.69 blue:0.75 alpha:1.0];
+    mediaEditViewController.toolbar.backgroundColor=[UIColor colorWithRed: 0.11 green: 0.56 blue: 0.98 alpha:1.0];
     
 }
 
